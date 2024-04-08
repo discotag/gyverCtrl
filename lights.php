@@ -1,8 +1,12 @@
 #!/usr/bin/php
 <?php
 /* Простенький скрипт для управления гирляндой Гайвера из командной строки
-	© liilliil, 2023
+	© liilliil, 2023-24
 */
+
+//    Текст можно передать через пайп
+$ofPipe= (posix_isatty(STDIN)) ? false : file_get_contents('php://stdin');
+
 $server_ip   = ''; // вставьте ip-адрес гирлянды
 $server_port = 2390;
 $fx= array('clock'=>0,
@@ -75,8 +79,9 @@ if('mode'==$s) {
 	exit;	
 }
 if('text'==$s) {
-	send('$6 14|'.implode(' ',array_slice($argv,2)));
-	exit;	
+	if(!$ofPipe)    send('$6 14|'.$argv[2]);
+	else            send('$6 14|'.$ofPipe);
+	exit;
 }
 
 function send($m) {
